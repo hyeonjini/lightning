@@ -6,7 +6,7 @@ import pytorch_lightning as pl
 from torchmetrics import MaxMetric
 from torchmetrics.classification.accuracy import Accuracy
 
-from components.simple_dense_net import SimpleDenseNet
+from .components.simple_dense_net import SimpleDenseNet
 
 class CIFAR100Module(pl.LightningModule):
     """
@@ -23,11 +23,11 @@ class CIFAR100Module(pl.LightningModule):
 
     def __init__(
         self,
-        input_size: int = 784,
-        lin1_size: int = 256,
+        input_size: int = 3072,
+        lin1_size: int = 784,
         lin2_size: int = 256,
         lin3_size: int = 256,
-        output_size: int = 10,
+        output_size: int = 100,
         lr: float = 0.001,
         weight_decay: float = 0.0005,
     ):
@@ -37,7 +37,6 @@ class CIFAR100Module(pl.LightningModule):
 
         # architecture
         self.model = SimpleDenseNet(hparams=self.hparams)
-
         # loss function
         self.criterion = torch.nn.CrossEntropyLoss()
 
@@ -79,19 +78,19 @@ class CIFAR100Module(pl.LightningModule):
         pass
 
     def validation_step(self, batch: Any, batch_idx: int):
-        loss ,preds, targets = self.step(batch)
+        loss, preds, targets = self.step(batch)
 
         # log val metrics
         acc = self.val_acc(preds, targets)
         self.log("val/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
-        self.log("val/acc", acc, on_step=False, on_epoch=True, porg_bar=True)
+        self.log("val/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
 
         return {"loss": loss, "preds": preds, "targets": targets}
     
     def validation_epoch_end(self, outputs: List[Any]):
         acc = self.val_acc.compute() # get val accuracy from current epoch
         self.val_acc_best.update(acc)
-        self.log("val/acc_best", self.val_acc_best.compute(), on_epoch=True, porg_bar=True)
+        self.log("val/acc_best", self.val_acc_best.compute(), on_epoch=True, prog_bar=True)
     
     def test_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)

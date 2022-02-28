@@ -19,7 +19,7 @@ class CIFAR100DataModule(pl.LightningDataModule):
     def __init__(
         self,
         data_dir : str = "data/cifar100/",
-        # train_val_test_split: Tuple[int, int, int] = (55_000, 5_000, 10_000),
+        train_val_test_split: Tuple[int, int, int] = (55_000, 5_000, 10_000),
         batch_size: int = 64,
         num_workers: int = 0,
         pin_memory: bool = False
@@ -31,10 +31,13 @@ class CIFAR100DataModule(pl.LightningDataModule):
         # init
         self.data_dir = data_dir
 
+        # image size
+        
+
         # data transformations
         self.transforms = transforms.Compose([
+            transforms.Resize((32, 32)),
             transforms.ToTensor(),
-            
         ])
         #
         self.data_train: Optional[Dataset]
@@ -66,9 +69,10 @@ class CIFAR100DataModule(pl.LightningDataModule):
         val_path = os.path.join(self.data_dir, "val")
         test_path = os.path.join(self.data_dir, "val")
 
-        self.data_train = ImageFolder(train_path)
-        self.data_val = ImageFolder(val_path)
-        self.data_test = ImageFolder(test_path)
+        self.data_train = ImageFolder(train_path, transform=self.transforms)
+        self.data_val = ImageFolder(val_path, transform=self.transforms)
+        self.data_test = ImageFolder(test_path, transform=self.transforms)
+
 
     def train_dataloader(self):
         return DataLoader(
