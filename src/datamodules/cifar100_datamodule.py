@@ -21,6 +21,7 @@ class CIFAR100DataModule(pl.LightningDataModule):
         data_dir : str = "data/cifar100/",
         train_val_test_split: Tuple[int, int, int] = (55_000, 5_000, 10_000),
         batch_size: int = 64,
+        img_size: int = 32,
         num_workers: int = 0,
         pin_memory: bool = False
     ):
@@ -36,7 +37,7 @@ class CIFAR100DataModule(pl.LightningDataModule):
 
         # data transformations
         self.transforms = transforms.Compose([
-            transforms.Resize((32, 32)),
+            transforms.Resize((img_size, img_size)),
             transforms.ToTensor(),
         ])
         #

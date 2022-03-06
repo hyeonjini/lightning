@@ -1,12 +1,14 @@
-from typing import Any, List
+from typing import Any, List, Union, Optional
 
 import torch
 import pytorch_lightning as pl
-
+import torchvision
 from torchmetrics import MaxMetric
 from torchmetrics.classification.accuracy import Accuracy
 
 from .components.simple_dense_net import SimpleDenseNet
+from src.models.components.vgg_net import VGG
+from src.models.components.simple_conv_net import SimpleConvNet
 
 class CIFAR100Module(pl.LightningModule):
     """
@@ -23,11 +25,9 @@ class CIFAR100Module(pl.LightningModule):
 
     def __init__(
         self,
-        input_size: int = 3072,
-        lin1_size: int = 784,
-        lin2_size: int = 256,
-        lin3_size: int = 256,
-        output_size: int = 100,
+        feature: Optional[dict],
+        init_weights: bool,
+        num_classes: int = 100,
         lr: float = 0.001,
         weight_decay: float = 0.0005,
     ):
@@ -36,7 +36,11 @@ class CIFAR100Module(pl.LightningModule):
         self.save_hyperparameters(logger=False)
 
         # architecture
-        self.model = SimpleDenseNet(hparams=self.hparams)
+        # self.model = SimpleDenseNet(hparams=self.hparams)
+        # self.model = VGG(hparams=self.hparams)
+        # self.model = torchvision.models.vgg11(pretrained=False)
+        self.model = SimpleConvNet(self.hparams)
+        print(self.model)
         # loss function
         self.criterion = torch.nn.CrossEntropyLoss()
 

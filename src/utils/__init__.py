@@ -52,7 +52,7 @@ def extras(config: DictConfig) -> None:
         warnings.filterwarnings("ignore")
 
     if config.get("print_config"):
-        log.info("Printing config tree with Rich! <config.print_config=True")
+        log.info("Printing config tree with Rich! <config.print_config=True>")
         print_config(config, resolve=True)
 
 @rank_zero_only
@@ -92,7 +92,6 @@ def print_config(
         branch = tree.add(field, style=style, guide_style = style)
 
         config_group = config[field]
-        print(config_group)
         if isinstance(config_group, DictConfig):
             branch_content = OmegaConf.to_yaml(config_group, resolve=resolve)
         else:

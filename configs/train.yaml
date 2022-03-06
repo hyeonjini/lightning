@@ -3,7 +3,7 @@
 defaults:
   - _self_
   - datamodule: cifar100.yaml
-  - model: cifar100.yaml
+  - model: simple_conv_net.yaml
   - callbacks: default.yaml
   - logger: null
   - trainer: default.yaml
