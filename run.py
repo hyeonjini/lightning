@@ -1,6 +1,7 @@
-import dotenv
+# import dotenv
 import hydra
 from omegaconf import DictConfig
+
 
 @hydra.main(config_path="configs/", config_name="train.yaml")
 def main(config: DictConfig):
@@ -15,4 +16,3 @@ def main(config: DictConfig):
 
 if __name__ == "__main__":
     main()
-    
